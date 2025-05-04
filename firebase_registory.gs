@@ -5,12 +5,12 @@ const TARGET_URL = `${DATABASE_URL}/messages.json`;
  * 認証あり
  ******************** */
 
-function readData() {
+function readData(path) {
   const options = {
     method: 'GET',
     headers: getAuthHeader()
   };
-  const response = UrlFetchApp.fetch(TARGET_URL, options);
+  const response = UrlFetchApp.fetch(`${DATABASE_URL}${path}.json`, options);
   const data = JSON.parse(response.getContentText());
   Logger.log(data);
   return data;

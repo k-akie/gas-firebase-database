@@ -2,7 +2,10 @@ function expandToSpreadsheet(json) {
   const sheet = SpreadsheetApp.getActiveSheet();
 
   // ヘッダー行
-  sheet.appendRow(['hash', 'send time(JST)', 'text', 'userid']);
+  const header = ['hash', 'send time(JST)', 'text', 'userid'];
+  if (sheet.getLastRow() === 0) {
+    sheet.appendRow(header);
+  }
 
   // unixtime でソート
   const dataArray = Object.entries(json).map(([key, value]) => ({ key, ...value }));
@@ -12,8 +15,10 @@ function expandToSpreadsheet(json) {
   dataArray.forEach(item => {
     const date = new Date(item.unixtime);
     const jst = Utilities.formatDate(date, 'Asia/Tokyo', 'yyyy/MM/dd HH:mm:ss');
+    
+    const text = item.text.replace(/\\n/g, '\n');
 
-    const rowData = [item.key, jst, item.text, item.userid];
+    const rowData = [item.key, jst, text, item.userid];
     sheet.appendRow(rowData);
   });
 

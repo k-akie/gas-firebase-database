@@ -1,3 +1,3 @@
 function __test_expand() {
-  expandToSpreadsheet(readData());
+  expandToSpreadsheet(readData('/messages'));
 }
