@@ -1,10 +1,39 @@
+const SHEET_NAME_IN = 'input';
+const SHEET_NAME_OUT = 'output';
+
+function fetchInput() {
+  const spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+  const sheet = spreadsheet.getSheetByName(SHEET_NAME_IN);
+  if (!sheet) {
+    Logger.log(`指定されたシートが見つかりませんでした: ${SHEET_NAME_IN}`);
+    return;
+  }
+
+  // A列の値を参照
+  const range = sheet.getRange(2, 1, sheet.getLastRow() - 1, 1);
+  const rowData = range.getValues();
+  const values = rowData.map(row => row[0]);
+  return values;
+}
+
 function expandToSpreadsheet(json) {
-  const sheet = SpreadsheetApp.getActiveSheet();
+  const spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+  const sheet = spreadsheet.getSheetByName(SHEET_NAME_OUT);
+  if (!sheet) {
+    Logger.log(`指定されたシートが見つかりませんでした: ${SHEET_NAME_OUT}`);
+    return;
+  }
 
   // ヘッダー行
   const header = ['hash', 'send time(JST)', 'text', 'userid'];
   if (sheet.getLastRow() === 0) {
     sheet.appendRow(header);
+  }
+
+  if (!json) {
+    const rowData = [item.key, null, "Not Found", null];
+    sheet.appendRow(rowData);
+    return;
   }
 
   // unixtime でソート
